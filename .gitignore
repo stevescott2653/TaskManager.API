@@ -59,3 +59,8 @@ Generated/
 
 # NuGet Packages
 packages/
+
+# Sensitive Files are ignored to prevent accidental commits
+    appsettings.json
+    appsettings.*.json
+    .env
