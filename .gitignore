@@ -1,0 +1,61 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+.vscode/*
+
+# Rider
+.idea/
+*.sln.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Publish
+publish/
+
+# Secrets
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+global.json
+
+# Dependency
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Optional: Docker
+*.pid
+docker-compose.override.yml
+
+# Test Results
+TestResults/
+
+# Tooling
+.dotnet-tools/
+
+# Generated Code
+Generated/
+
+# NuGet Packages
+packages/
