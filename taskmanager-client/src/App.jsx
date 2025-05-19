@@ -1,49 +1,56 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 import './App.css';
 
 function App() {
+    const isAuthenticated = !!localStorage.getItem('token');
+
     return (
-        <div className="app-container">
-            {/* Navigation Bar */}
-            <header className="navbar">
-                <div className="logo">TaskManager</div>
-                <nav>
-                    <ul className="nav-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </nav>
-            </header>
+        <Router>
+            <div className="app-container">
+                {/* Navigation Bar */}
+                <header className="navbar">
+                    <div className="logo">TaskManager</div>
+                    <nav>
+                        <ul className="nav-links">
+                            {!isAuthenticated && (
+                                <>
+                                    <li><Link to="/login">Login</Link></li>
+                                    <li><Link to="/register">Register</Link></li>
+                                </>
+                            )}
+                            {isAuthenticated && (
+                                <li><Link to="/dashboard">Dashboard</Link></li>
+                            )}
+                        </ul>
+                    </nav>
+                </header>
 
-            {/* Main Content */}
-            <main className="main-content">
-                <section id="home" className="section">
-                    <h1>Welcome to TaskManager</h1>
-                    <p>Organize your tasks efficiently and boost your productivity.</p>
-                </section>
+                {/* Main Content */}
+                <main className="main-content">
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route
+                            path="/dashboard"
+                            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+                        />
+                        <Route
+                            path="/"
+                            element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />}
+                        />
+                    </Routes>
+                </main>
 
-                <section id="about" className="section">
-                    <h2>About Us</h2>
-                    <p>TaskManager is a simple yet powerful tool to manage your daily tasks.</p>
-                </section>
-
-                <section id="features" className="section">
-                    <h2>Features</h2>
-                    <ul>
-                        <li>Create and manage tasks</li>
-                        <li>Set deadlines and reminders</li>
-                        <li>Track your progress</li>
-                    </ul>
-                </section>
-            </main>
-
-            {/* Footer */}
-            <footer className="footer">
-                <p>&copy; 2025 TaskManager. All rights reserved.</p>
-            </footer>
-        </div>
+                {/* Footer */}
+                <footer className="footer">
+                    <p>&copy; 2025 TaskManager. All rights reserved.</p>
+                </footer>
+            </div>
+        </Router>
     );
 }
 

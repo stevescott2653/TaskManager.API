@@ -22,6 +22,7 @@ namespace TaskManager.API.Controllers
             _configuration = configuration;
         }
 
+        // POST: api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
@@ -41,6 +42,7 @@ namespace TaskManager.API.Controllers
             return Ok(new { message = "User created successfully." });
         }
 
+        // POST: api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
@@ -55,6 +57,7 @@ namespace TaskManager.API.Controllers
             return Ok(new { token });
         }
 
+        // Helper: Generate JWT token for authenticated user
         private string GenerateJwtToken(ApplicationUser user)
         {
             var claims = new[]
