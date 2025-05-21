@@ -1,16 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './auth/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import './App.css';
 
 function App() {
-    const isAuthenticated = !!localStorage.getItem('token');
+    const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        logout();
         navigate('/login');
     };
 
@@ -56,10 +57,4 @@ function App() {
     );
 }
 
-export default function AppWithRouter() {
-    return (
-        <Router>
-            <App />
-        </Router>
-    );
-}
+export default App;
