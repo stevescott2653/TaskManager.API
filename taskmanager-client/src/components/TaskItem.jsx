@@ -1,5 +1,8 @@
 import React from 'react';
 
+const STATUS_OPTIONS = ['ToDo', 'In Progress', 'Done'];
+const PRIORITY_OPTIONS = ['Low', 'Medium', 'High'];
+
 function TaskItem({
     task,
     isEditing,
@@ -42,9 +45,7 @@ function TaskItem({
                         onChange={onEditChange}
                         className="px-2 py-1 border rounded"
                     >
-                        <option value="ToDo">ToDo</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Done">Done</option>
+                        {STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
                     <select
                         name="priority"
@@ -52,9 +53,7 @@ function TaskItem({
                         onChange={onEditChange}
                         className="px-2 py-1 border rounded"
                     >
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
+                        {PRIORITY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
                     <button
                         onClick={onEditSave}

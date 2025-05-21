@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/api';
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
+import toast from 'react-hot-toast';
 
 const STATUS_OPTIONS = ['ToDo', 'In Progress', 'Done'];
 
@@ -24,6 +25,7 @@ function Dashboard() {
                 setTasks(response.data);
             } catch (err) {
                 setError('Failed to load tasks.');
+                toast.error('Failed to load tasks.');
             } finally {
                 setLoading(false);
             }
@@ -42,6 +44,7 @@ function Dashboard() {
         setAddError('');
         if (!newTask.title.trim()) {
             setAddError('Task title is required.');
+            toast.error('Task title is required.');
             return;
         }
         setAdding(true);
@@ -49,8 +52,10 @@ function Dashboard() {
             const response = await api.post('/tasks', newTask);
             setTasks([...tasks, response.data]);
             setNewTask({ title: '', description: '', dueDate: '', status: 'ToDo', priority: 'Medium' });
-        } catch {
+            toast.success('Task added!');
+        } catch (err) {
             setAddError('Failed to add task.');
+            toast.error('Failed to add task.');
         } finally {
             setAdding(false);
         }
@@ -62,8 +67,10 @@ function Dashboard() {
         try {
             await api.delete(`/tasks/${id}`);
             setTasks(tasks.filter(task => task.id !== id));
+            toast.success('Task deleted!');
         } catch {
             setError('Failed to delete task.');
+            toast.error('Failed to delete task.');
         } finally {
             setDeletingId(null);
         }
@@ -85,8 +92,10 @@ function Dashboard() {
             const response = await api.put(`/tasks/${id}`, editTask);
             setTasks(tasks.map(task => (task.id === id ? response.data : task)));
             setEditingId(null);
+            toast.success('Task updated!');
         } catch {
             setError('Failed to update task.');
+            toast.error('Failed to update task.');
         }
     };
 
