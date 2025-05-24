@@ -4,6 +4,47 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.14.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+
+C:\DEV\TaskManager.API&gt;cd C:\DEV
+
+C:\DEV&gt;cd C\DEV\TaskManager.API
+The system cannot find the path specified.
+
+C:\DEV&gt;cd C:\DEV\TaskManager.API
+
+C:\DEV\TaskManager.API&gt;dotnet run
+Using launch settings from C:\DEV\TaskManager.API\Properties\launchSettings.json...
+Building...
+C:\DEV\TaskManager.API\DTOs\RegisterDto.cs(9,23): warning CS8618: Non-nullable property 'Email' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+C:\DEV\TaskManager.API\DTOs\RegisterDto.cs(13,23): warning CS8618: Non-nullable property 'Password' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+C:\DEV\TaskManager.API\DTOs\RegisterDto.cs(17,23): warning CS8618: Non-nullable property 'ConfirmPassword' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+C:\DEV\TaskManager.API\DTOs\LoginDto.cs(9,23): warning CS8618: Non-nullable property 'Email' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+C:\DEV\TaskManager.API\DTOs\LoginDto.cs(13,23): warning CS8618: Non-nullable property 'Password' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+C:\DEV\TaskManager.API\Program.cs(71,80): warning CS8604: Possible null reference argument for parameter 's' in 'byte[] Encoding.GetBytes(string s)'.
+C:\DEV\TaskManager.API\Controllers\AuthController.cs(66,44): warning CS8604: Possible null reference argument for parameter 'value' in 'Claim.Claim(string type, string value)'.
+C:\DEV\TaskManager.API\Controllers\AuthController.cs(70,71): warning CS8604: Possible null reference argument for parameter 's' in 'byte[] Encoding.GetBytes(string s)'.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5077
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\DEV\TaskManager.API
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+
+C:\DEV\TaskManager.API&gt;dotnet ef database update
+Build started...
+Build succeeded.
+The Entity Framework tools version '9.0.4' is older than that of the runtime '9.0.5'. Update the tools for the latest features and bug fixes. See https://aka.ms/AAc1fbw for more information.
+No DbContext was found in assembly 'TaskManager.API'. Ensure that you're using the correct assembly and that the type is neither abstract nor generic.
+
+C:\DEV\TaskManager.API&gt;</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +52,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

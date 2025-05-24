@@ -1,13 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TaskManager.API;
 
+// Create the builder
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Configure Entity Framework Core with SQL Server
+builder.Services.AddDbContext<TaskManagerDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure Identity password policy to allow simple passwords
 builder.Services.Configure<IdentityOptions>(options =>
@@ -19,6 +26,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = false;
 });
 
+// Add Swagger/OpenAPI support with JWT authentication
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -57,6 +65,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Configure JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
