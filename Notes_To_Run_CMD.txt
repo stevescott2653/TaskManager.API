@@ -4,6 +4,7 @@
 
 Open a terminal and navigate to the root of the API project (where Program.cs is located):
 
+cd C:\DEV\TaskManager.API
 dotnet run
 
 The backend will start (by default on http://localhost:5077 or similar).
@@ -14,7 +15,7 @@ The backend will start (by default on http://localhost:5077 or similar).
 
 Open a new terminal window and navigate to the client directory:
 
-cd taskmanager-client
+cd C:\DEV\TaskManager.API\taskmanager-client
 npm install
 npm run dev
 
@@ -30,8 +31,14 @@ http://localhost:5173
 - **Login page:** http://localhost:5173/login
 - **Register page:** http://localhost:5173/register
 
+Test credentials for login:
+- **Email:**
+testuser@example.com
+- **Password:**
+Test1234!
+
 ---
 
 **Note:**  
 - Make sure both the backend API and frontend client are running at the same time.
-- Always run `dotnet run` in the API root directory, and `npm run dev` in the `taskmanager-client` directory.
+- Always run `dotnet run` in the API root directory (`C:\DEV\TaskManager.API`), and `npm run dev` in the `taskmanager-client` directory.
