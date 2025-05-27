@@ -8,7 +8,8 @@ namespace TaskManager.API
         {
         }
 
-        // Define your DbSets here, for example:
-        // public DbSet<Task> Tasks { get; set; }
+        // Example DbSet for tasks
+        public DbSet<TaskItem> Tasks { get; set; }
     }
 }
+  
