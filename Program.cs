@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TaskManager.API;
+using TaskManager.API.Models; // For ApplicationUser
 
 // Create the builder
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
 });
+
+// Add Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<TaskManagerDbContext>()
+    .AddDefaultTokenProviders();
 
 // Add Swagger/OpenAPI support with JWT authentication
 builder.Services.AddSwaggerGen(options =>

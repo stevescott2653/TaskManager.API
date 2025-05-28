@@ -7,24 +7,25 @@ namespace TaskManager.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
-    public class TaskController : ControllerBase
+    [Authorize] // Require authentication for all actions
+    public class TasksController : ControllerBase
     {
         private readonly TaskManagerDbContext _context;
 
-        public TaskController(TaskManagerDbContext context)
+        public TasksController(TaskManagerDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/task
+        // GET: api/tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
+        public async Task<IActionResult> GetTasks()
         {
-            return await _context.Tasks.OrderByDescending(t => t.CreatedAt).ToListAsync();
+            var tasks = await _context.Tasks.ToListAsync();
+            return Ok(tasks);
         }
 
-        // GET: api/task/5
+        // GET: api/tasks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
@@ -34,21 +35,28 @@ namespace TaskManager.API.Controllers
             return task;
         }
 
-        // POST: api/task
+        // POST: api/tasks
         [HttpPost]
-        public async Task<ActionResult<TaskItem>> CreateTask(TaskItem task)
+        public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            task.CreatedAt = DateTime.UtcNow;
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
         }
 
-        // PUT: api/task/5
+        // PUT: api/tasks/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, TaskItem task)
+        public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskItem task)
         {
             if (id != task.Id)
                 return BadRequest();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             _context.Entry(task).State = EntityState.Modified;
             try
@@ -57,14 +65,14 @@ namespace TaskManager.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Tasks.Any(e => e.Id == id))
+                if (!TaskExists(id))
                     return NotFound();
                 throw;
             }
             return NoContent();
         }
 
-        // DELETE: api/task/5
+        // DELETE: api/tasks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
@@ -75,6 +83,11 @@ namespace TaskManager.API.Controllers
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        private bool TaskExists(int id)
+        {
+            return _context.Tasks.Any(e => e.Id == id);
         }
     }
 }

@@ -29,6 +29,12 @@ namespace TaskManager.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Check if user already exists
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+                return Conflict(new { message = "A user with this email already exists." });
+
+            // Create the user
             var user = new ApplicationUser
             {
                 UserName = model.Email,
@@ -37,7 +43,11 @@ namespace TaskManager.API.Controllers
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+            {
+                // Return all errors in a user-friendly way
+                var errors = result.Errors.Select(e => e.Description).ToArray();
+                return BadRequest(new { errors });
+            }
 
             return Ok(new { message = "User created successfully." });
         }

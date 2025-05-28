@@ -30,12 +30,23 @@ function Register() {
             setTimeout(() => navigate('/login'), 1500);
         } catch (err) {
             setLoading(false);
-            if (err.response && err.response.data) {
+            if (err.response && err.response.status === 409) {
+                setError('A user with this email already exists.');
+            } else if (err.response && err.response.data) {
                 // Show detailed error if available
                 if (Array.isArray(err.response.data)) {
                     setError(err.response.data.map(e => e.description || e.code || JSON.stringify(e)).join(' '));
                 } else if (err.response.data.message) {
                     setError(err.response.data.message);
+                } else if (typeof err.response.data === 'object') {
+                    // ModelState errors
+                    const messages = [];
+                    for (const key in err.response.data) {
+                        if (Array.isArray(err.response.data[key])) {
+                            messages.push(...err.response.data[key]);
+                        }
+                    }
+                    setError(messages.join(' '));
                 } else {
                     setError('Registration failed.');
                 }
