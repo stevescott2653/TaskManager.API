@@ -1,15 +1,36 @@
 ﻿import axios from 'axios';
 
+const API_URL = 'http://localhost:5077/api';
+
 const api = axios.create({
-    baseURL: 'http://localhost:5077/api', 
+  baseURL: API_URL,
 });
 
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+// Get all tasks
+export const getTasks = async (token) => {
+  return api.get('/tasks', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// Create a new task
+export const createTask = async (task, token) => {
+  return api.post('/tasks', task, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// Update an existing task
+export const updateTask = async (task, token) => {
+  return api.put(`/tasks/${task.id}`, task, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export default api;

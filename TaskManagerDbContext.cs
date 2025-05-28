@@ -1,15 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using TaskManager.API.Models;
 
 namespace TaskManager.API
 {
-    public class TaskManagerDbContext : DbContext
+    public class TaskManagerDbContext : IdentityDbContext<ApplicationUser>
     {
         public TaskManagerDbContext(DbContextOptions<TaskManagerDbContext> options) : base(options)
         {
         }
 
-        // Example DbSet for tasks
         public DbSet<TaskItem> Tasks { get; set; }
     }
 }
-  
