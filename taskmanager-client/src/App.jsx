@@ -21,31 +21,33 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       {!hideLayout && (
-        <header className="bg-blue-600 text-white py-4">
-          <div className="container mx-auto flex justify-between items-center">
+        <header className="bg-blue-600 text-white py-4 shadow">
+          <div className="container mx-auto flex justify-between items-center px-4">
             <h1 className="text-3xl font-bold">Task Manager</h1>
             <nav>
-              <ul className="flex gap-4">
-                {!isAuthenticated && (
-                  <>
-                    <li><Link to="/login">Login</Link></li>
-                    <li><Link to="/register">Register</Link></li>
-                  </>
-                )}
-                {isAuthenticated && (
-                  <>
-                    <li><Link to="/dashboard">Dashboard</Link></li>
-                    <li>
-                      <button
-                        onClick={handleLogout}
-                        className="bg-blue-800 px-2 py-1 rounded"
-                      >
-                        Logout
-                      </button>
-                    </li>
-                  </>
-                )}
-              </ul>
+              {isAuthenticated ? (
+                <div className="flex items-center gap-6">
+                  <Link to="/dashboard" className="hover:underline text-lg">
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-white text-blue-700 px-4 py-2 rounded shadow hover:bg-blue-100 transition"
+                    style={{ marginLeft: '12px' }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <ul className="flex gap-4 items-center">
+                  <li>
+                    <Link to="/login" className="hover:underline">Login</Link>
+                  </li>
+                  <li>
+                    <Link to="/register" className="hover:underline">Register</Link>
+                  </li>
+                </ul>
+              )}
             </nav>
           </div>
         </header>

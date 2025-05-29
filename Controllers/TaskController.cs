@@ -21,7 +21,9 @@ namespace TaskManager.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTasks()
         {
-            var tasks = await _context.Tasks.ToListAsync();
+            var tasks = await _context.Tasks
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
             return Ok(tasks);
         }
 
@@ -42,10 +44,18 @@ namespace TaskManager.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Ensure all fields are set, fallback to defaults if missing
             task.CreatedAt = DateTime.UtcNow;
+            task.Status = string.IsNullOrWhiteSpace(task.Status) ? "ToDo" : task.Status;
+            task.Priority = string.IsNullOrWhiteSpace(task.Priority) ? "Medium" : task.Priority;
+            task.IsCompleted = false;
+
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
+
+            // Fetch the task again to ensure all fields (including DB-generated) are returned
+            var createdTask = await _context.Tasks.FindAsync(task.Id);
+            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, createdTask);
         }
 
         // PUT: api/tasks/5
@@ -58,6 +68,10 @@ namespace TaskManager.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Ensure all fields are set, fallback to defaults if missing
+            task.Status = string.IsNullOrWhiteSpace(task.Status) ? "ToDo" : task.Status;
+            task.Priority = string.IsNullOrWhiteSpace(task.Priority) ? "Medium" : task.Priority;
+
             _context.Entry(task).State = EntityState.Modified;
             try
             {
@@ -69,7 +83,9 @@ namespace TaskManager.API.Controllers
                     return NotFound();
                 throw;
             }
-            return NoContent();
+            // Return the updated task
+            var updatedTask = await _context.Tasks.FindAsync(id);
+            return Ok(updatedTask);
         }
 
         // DELETE: api/tasks/5

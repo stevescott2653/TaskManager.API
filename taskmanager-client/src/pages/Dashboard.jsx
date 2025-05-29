@@ -18,10 +18,15 @@ function Dashboard() {
     const [editTask, setEditTask] = useState({});
     const [filterStatus, setFilterStatus] = useState('');
 
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
+
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const response = await api.get('/tasks');
+                const response = await api.get('/tasks', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 setTasks(response.data);
             } catch (err) {
                 setError('Failed to load tasks.');
@@ -31,7 +36,7 @@ function Dashboard() {
             }
         };
         fetchTasks();
-    }, []);
+    }, [token]);
 
     // Add Task Handlers
     const handleAddTaskChange = (e) => {
@@ -49,7 +54,9 @@ function Dashboard() {
         }
         setAdding(true);
         try {
-            const response = await api.post('/tasks', newTask);
+            const response = await api.post('/tasks', newTask, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setTasks([...tasks, response.data]);
             setNewTask({ title: '', description: '', dueDate: '', status: 'ToDo', priority: 'Medium' });
             toast.success('Task added!');
@@ -65,7 +72,9 @@ function Dashboard() {
     const handleDeleteTask = async (id) => {
         setDeletingId(id);
         try {
-            await api.delete(`/tasks/${id}`);
+            await api.delete(`/tasks/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setTasks(tasks.filter(task => task.id !== id));
             toast.success('Task deleted!');
         } catch {
@@ -89,7 +98,9 @@ function Dashboard() {
 
     const handleEditSave = async (id) => {
         try {
-            const response = await api.put(`/tasks/${id}`, editTask);
+            const response = await api.put(`/tasks/${id}`, editTask, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setTasks(tasks.map(task => (task.id === id ? response.data : task)));
             setEditingId(null);
             toast.success('Task updated!');
@@ -109,44 +120,51 @@ function Dashboard() {
         ? tasks.filter(task => task.status === filterStatus)
         : tasks;
 
-    if (loading) return <div className="text-center text-blue-500">Loading...</div>;
-    if (error) return <div className="text-center text-red-500">{error}</div>;
-
     return (
-        <div className="max-w-2xl mx-auto bg-white rounded shadow p-6 mt-8">
-            <h2 className="text-2xl font-bold mb-4">Your Tasks</h2>
-            <TaskForm
-                task={newTask}
-                onChange={handleAddTaskChange}
-                onSubmit={handleAddTask}
-                loading={adding}
-                submitLabel="Add Task"
-            />
-            {addError && <div className="text-red-500 mb-2 text-center">{addError}</div>}
-
-            <div className="mb-4">
-                <label className="mr-2 font-semibold">Filter by Status:</label>
-                <select
-                    value={filterStatus}
-                    onChange={e => setFilterStatus(e.target.value)}
-                    className="px-2 py-1 border rounded"
-                >
-                    <option value="">All</option>
-                    {STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
+        <div className="flex justify-center items-start min-h-[80vh] bg-gray-100">
+            <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6 md:p-10 mt-10">
+                <h2 className="text-3xl font-bold mb-8 text-blue-700 text-center tracking-tight">Your Tasks</h2>
+                <div className="mb-8">
+                    <TaskForm
+                        task={newTask}
+                        onChange={handleAddTaskChange}
+                        onSubmit={handleAddTask}
+                        loading={adding}
+                        submitLabel="Add Task"
+                    />
+                    {addError && <div className="text-red-500 mb-2 text-center">{addError}</div>}
+                </div>
+                <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                    <label className="font-semibold mb-2 md:mb-0">Filter by Status:</label>
+                    <select
+                        value={filterStatus}
+                        onChange={e => setFilterStatus(e.target.value)}
+                        className="px-2 py-1 border rounded w-full md:w-48"
+                    >
+                        <option value="">All</option>
+                        {STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                </div>
+                {loading ? (
+                    <div className="text-center text-blue-500">Loading...</div>
+                ) : error ? (
+                    <div className="text-center text-red-500">{error}</div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <TaskList
+                            tasks={filteredTasks}
+                            editingId={editingId}
+                            editTask={editTask}
+                            onEditChange={handleEditChange}
+                            onEditSave={handleEditSave}
+                            onEditCancel={handleEditCancel}
+                            onEditStart={startEditTask}
+                            onDelete={handleDeleteTask}
+                            deletingId={deletingId}
+                        />
+                    </div>
+                )}
             </div>
-
-            <TaskList
-                tasks={filteredTasks}
-                editingId={editingId}
-                editTask={editTask}
-                onEditChange={handleEditChange}
-                onEditSave={handleEditSave}
-                onEditCancel={handleEditCancel}
-                onEditStart={startEditTask}
-                onDelete={handleDeleteTask}
-                deletingId={deletingId}
-            />
         </div>
     );
 }
