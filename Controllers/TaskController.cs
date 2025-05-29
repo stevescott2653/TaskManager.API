@@ -17,13 +17,36 @@ namespace TaskManager.API.Controllers
             _context = context;
         }
 
-        // GET: api/tasks
+        // GET: api/tasks?sortBy=DueDate&sortDir=asc&status=ToDo&priority=High
         [HttpGet]
-        public async Task<IActionResult> GetTasks()
+        public async Task<IActionResult> GetTasks(
+            [FromQuery] string? sortBy,
+            [FromQuery] string? sortDir,
+            [FromQuery] string? status,
+            [FromQuery] string? priority)
         {
-            var tasks = await _context.Tasks
-                .OrderByDescending(t => t.CreatedAt)
-                .ToListAsync();
+            var query = _context.Tasks.AsQueryable();
+
+            // Filtering
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(t => t.Status == status);
+
+            if (!string.IsNullOrWhiteSpace(priority))
+                query = query.Where(t => t.Priority == priority);
+
+            // Sorting
+            bool ascending = string.Equals(sortDir, "asc", StringComparison.OrdinalIgnoreCase);
+
+            query = sortBy switch
+            {
+                "Title" => ascending ? query.OrderBy(t => t.Title) : query.OrderByDescending(t => t.Title),
+                "DueDate" => ascending ? query.OrderBy(t => t.DueDate) : query.OrderByDescending(t => t.DueDate),
+                "Priority" => ascending ? query.OrderBy(t => t.Priority) : query.OrderByDescending(t => t.Priority),
+                "Status" => ascending ? query.OrderBy(t => t.Status) : query.OrderByDescending(t => t.Status),
+                _ => query.OrderByDescending(t => t.CreatedAt)
+            };
+
+            var tasks = await query.ToListAsync();
             return Ok(tasks);
         }
 
